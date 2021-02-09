@@ -18,13 +18,8 @@ public class JpaApplication {
       // 비영속 상태
       Member member = new Member();
       member.setId(1L);
-      member.setName("Hello");
-      //영속상태
+      member.setRoleType(RoleType.ADMIN);
       entityManager.persist(member);
-
-      entityManager.flush();
-      System.out.println("======================");
-
       transaction.commit();
     }catch (Exception e) {
       transaction.rollback();
