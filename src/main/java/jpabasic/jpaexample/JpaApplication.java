@@ -20,7 +20,6 @@ public class JpaApplication {
       member.setId(1L);
       member.setRoleType(RoleType.ADMIN);
       entityManager.persist(member);
-      transaction.commit();
     }catch (Exception e) {
       transaction.rollback();
     }finally {
