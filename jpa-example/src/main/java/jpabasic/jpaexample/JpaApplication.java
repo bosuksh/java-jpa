@@ -31,15 +31,19 @@ public class JpaApplication {
       //멤버저장
       Member member = new Member();
       member.setUsername("USER1");
-      member.setTeam(teamA);
+      member.updateTeam(teamA);
       entityManager.persist(member);
       entityManager.flush();
       entityManager.clear();
 
       Member findMember = entityManager.find(Member.class, 3L);
-      findMember.setTeam(teamB);
-      entityManager.flush();
-      entityManager.clear();
+      findMember.updateTeam(teamB);
+
+      Team team = findMember.getTeam();
+      List<Member> memberList = team.getMemberList();
+      for (Member m : memberList) {
+        System.out.println("m = " + m.getUsername());
+      }
 
       transaction.commit();
     }catch (Exception e) {

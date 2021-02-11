@@ -35,7 +35,8 @@ public class Member {
     return team;
   }
 
-  public void setTeam(Team team) {
+  public void updateTeam(Team team) {
     this.team = team;
+    this.team.getMemberList().add(this);
   }
 }
