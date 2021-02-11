@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaApplication {
 
@@ -16,10 +17,30 @@ public class JpaApplication {
     transaction.begin();
     try{
       // 비영속 상태
+
+      //팀저장
+      Team teamA = new Team();
+      teamA.setName("TEAM A");
+      entityManager.persist(teamA);
+
+      Team teamB = new Team();
+      teamB.setName("TEAM B");
+      entityManager.persist(teamB);
+
+
+      //멤버저장
       Member member = new Member();
-      member.setId(1L);
-      member.setRoleType(RoleType.ADMIN);
+      member.setUsername("USER1");
+      member.setTeam(teamA);
       entityManager.persist(member);
+      entityManager.flush();
+      entityManager.clear();
+
+      Member findMember = entityManager.find(Member.class, 3L);
+      findMember.setTeam(teamB);
+      entityManager.flush();
+      entityManager.clear();
+
       transaction.commit();
     }catch (Exception e) {
       transaction.rollback();
