@@ -27,23 +27,28 @@ public class JpaApplication {
       teamB.setName("TEAM B");
       entityManager.persist(teamB);
 
+      //LOCKER 세팅
+      Locker locker = new Locker();
+      locker.setName("LOCKER A");
+      entityManager.persist(locker);
 
       //멤버저장
       Member member = new Member();
       member.setUsername("USER1");
       member.updateTeam(teamA);
+      member.setLocker(locker);
       entityManager.persist(member);
-      entityManager.flush();
-      entityManager.clear();
-
-      Member findMember = entityManager.find(Member.class, 3L);
-      findMember.updateTeam(teamB);
-
-      Team team = findMember.getTeam();
-      List<Member> memberList = team.getMemberList();
-      for (Member m : memberList) {
-        System.out.println("m = " + m.getUsername());
-      }
+//      entityManager.flush();
+//      entityManager.clear();
+//
+//      Member findMember = entityManager.find(Member.class, 3L);
+//      findMember.updateTeam(teamB);
+//
+//      Team team = findMember.getTeam();
+//      List<Member> memberList = team.getMemberList();
+//      for (Member m : memberList) {
+//        System.out.println("m = " + m.getUsername());
+//      }
 
       transaction.commit();
     }catch (Exception e) {

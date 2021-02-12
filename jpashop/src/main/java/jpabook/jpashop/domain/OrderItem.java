@@ -51,9 +51,7 @@ public class OrderItem {
     return item;
   }
 
-  public void setItem(Item item) {
-    this.item = item;
-  }
+
 
   public void setOrder(Order order) {
     this.order = order;
