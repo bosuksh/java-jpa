@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class JpaApplication {
@@ -19,14 +20,12 @@ public class JpaApplication {
     EntityTransaction transaction = entityManager.getTransaction();
     transaction.begin();
     try{
+      Member member = new Member();
 
-      Book book = new Book();
-      book.setName("JPA Book");
-      book.setPrice(10000);
-      book.setIsbn("12bs");
-      book.setAuthor("aa");
-
-      entityManager.persist(book);
+      member.setUsername("doflamingo");
+      member.setCreatedBy("doflamingo");
+      member.setCreatedDateTime(LocalDateTime.now());
+      entityManager.persist(member);
       transaction.commit();
     }catch (Exception e) {
       transaction.rollback();
