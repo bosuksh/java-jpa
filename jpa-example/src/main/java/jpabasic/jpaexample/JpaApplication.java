@@ -1,14 +1,10 @@
 package jpabasic.jpaexample;
 
-import jpabasic.jpaexample.item.Book;
-import jpabasic.jpaexample.item.Item;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class JpaApplication {
 

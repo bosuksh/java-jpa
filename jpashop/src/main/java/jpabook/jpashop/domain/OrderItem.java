@@ -1,9 +1,11 @@
 package jpabook.jpashop.domain;
 
+import jpabook.jpashop.domain.item.Item;
+
 import javax.persistence.*;
 
 @Entity
-public class OrderItem {
+public class OrderItem extends BaseEntity{
   @Id @GeneratedValue
   @Column(name = "ORDER_ITEM_ID")
   private Long id;
@@ -13,8 +15,6 @@ public class OrderItem {
   @ManyToOne
   @JoinColumn(name = "ORDER_ID")
   private Order order;
-
-
   @ManyToOne
   @JoinColumn(name = "ITEM_ID")
   private Item item;
