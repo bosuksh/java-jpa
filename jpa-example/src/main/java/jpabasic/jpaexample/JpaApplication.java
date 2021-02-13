@@ -1,5 +1,8 @@
 package jpabasic.jpaexample;
 
+import jpabasic.jpaexample.item.Book;
+import jpabasic.jpaexample.item.Item;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -16,40 +19,14 @@ public class JpaApplication {
     EntityTransaction transaction = entityManager.getTransaction();
     transaction.begin();
     try{
-      // 비영속 상태
 
-      //팀저장
-      Team teamA = new Team();
-      teamA.setName("TEAM A");
-      entityManager.persist(teamA);
+      Book book = new Book();
+      book.setName("JPA Book");
+      book.setPrice(10000);
+      book.setIsbn("12bs");
+      book.setAuthor("aa");
 
-      Team teamB = new Team();
-      teamB.setName("TEAM B");
-      entityManager.persist(teamB);
-
-      //LOCKER 세팅
-      Locker locker = new Locker();
-      locker.setName("LOCKER A");
-      entityManager.persist(locker);
-
-      //멤버저장
-      Member member = new Member();
-      member.setUsername("USER1");
-      member.updateTeam(teamA);
-      member.setLocker(locker);
-      entityManager.persist(member);
-//      entityManager.flush();
-//      entityManager.clear();
-//
-//      Member findMember = entityManager.find(Member.class, 3L);
-//      findMember.updateTeam(teamB);
-//
-//      Team team = findMember.getTeam();
-//      List<Member> memberList = team.getMemberList();
-//      for (Member m : memberList) {
-//        System.out.println("m = " + m.getUsername());
-//      }
-
+      entityManager.persist(book);
       transaction.commit();
     }catch (Exception e) {
       transaction.rollback();
