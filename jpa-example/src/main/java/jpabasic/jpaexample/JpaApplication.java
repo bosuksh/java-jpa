@@ -19,22 +19,16 @@ public class JpaApplication {
     transaction.begin();
     try{
 
-      Team team = new Team();
-      team.setName("TeamA");
+      Parent parent = new Parent();
+      Child child1 = new Child();
+      Child child2 = new Child();
 
-      Member member = new Member();
-      member.setUsername("doflamingo");
-      member.updateTeam(team);
-      entityManager.persist(team);
-      entityManager.persist(member);
-      entityManager.flush();
-      entityManager.clear();
+      parent.addChild(child1);
+      parent.addChild(child2);
 
-      Member member1 = entityManager.find(Member.class, member.getId());
-      System.out.println("----------------------");
-      System.out.println("member1.getTeam().getClass() = " + member1.getTeam().getClass());
-      System.out.println("----------------------");
-      System.out.println(member1.getTeam().getName());
+      entityManager.persist(parent);
+
+      entityManager.remove(parent);
 
 
       transaction.commit();
