@@ -10,7 +10,7 @@ public class Parent {
   private Long id;
   private String name;
 
-  @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "parent", orphanRemoval = true)
   private List<Child> children = new ArrayList<>();
 
   public void addChild(Child child) {

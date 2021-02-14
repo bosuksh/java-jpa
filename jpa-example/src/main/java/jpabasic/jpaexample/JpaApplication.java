@@ -1,12 +1,9 @@
 package jpabasic.jpaexample;
 
-import org.hibernate.Hibernate;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.time.LocalDateTime;
 
 public class JpaApplication {
 
@@ -27,6 +24,8 @@ public class JpaApplication {
       parent.addChild(child2);
 
       entityManager.persist(parent);
+      entityManager.persist(child1);
+      entityManager.persist(child2);
 
       entityManager.remove(parent);
 
