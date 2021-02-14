@@ -18,22 +18,23 @@ public class JpaApplication {
     EntityTransaction transaction = entityManager.getTransaction();
     transaction.begin();
     try{
-      Member member = new Member();
 
+      Team team = new Team();
+      team.setName("TeamA");
+
+      Member member = new Member();
       member.setUsername("doflamingo");
+      member.updateTeam(team);
+      entityManager.persist(team);
       entityManager.persist(member);
       entityManager.flush();
       entityManager.clear();
 
-      Member referenceMember = entityManager.getReference(Member.class, member.getId());
-      System.out.println("member = " + referenceMember.getClass());
-      Member findMember = entityManager.find(Member.class, member.getId());
-      System.out.println("isLoaded = " + entityManagerFactory.getPersistenceUnitUtil().isLoaded(Member.class));
-      System.out.println("findMember.getUsername() = " + findMember.getUsername());
-      System.out.println("referenceMember.getUsername() = " + referenceMember.getUsername());
-
-      // instance of
-      System.out.println("findMember == referenceMember = " + (referenceMember.getClass() == Member.class));
+      Member member1 = entityManager.find(Member.class, member.getId());
+      System.out.println("----------------------");
+      System.out.println("member1.getTeam().getClass() = " + member1.getTeam().getClass());
+      System.out.println("----------------------");
+      System.out.println(member1.getTeam().getName());
 
 
       transaction.commit();

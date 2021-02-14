@@ -1,9 +1,6 @@
 package jpabasic.jpaexample;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +12,7 @@ public class Product {
 
   private String name;
 
-  @OneToMany(mappedBy = "product")
+  @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
   private List<Order> orderList = new ArrayList<>();
 
   public Long getId() {
