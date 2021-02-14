@@ -10,7 +10,7 @@ public class Parent {
   private Long id;
   private String name;
 
-  @OneToMany(mappedBy = "parent", orphanRemoval = true)
+  @OneToMany(mappedBy = "parent", orphanRemoval = false)
   private List<Child> children = new ArrayList<>();
 
   public void addChild(Child child) {
