@@ -18,7 +18,7 @@ public class JpaApplication {
 
       Member member = new Member();
       member.setUsername("Member 1");
-      member.setAddress(new Address("city", "street", "10000"));
+      member.setHomeAddress(new Address("city", "street", "10000"));
       member.setPeriod(new Period());
 
       entityManager.persist(member);

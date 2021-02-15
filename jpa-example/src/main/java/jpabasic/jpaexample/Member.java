@@ -21,7 +21,18 @@ public class Member extends BaseEntity {
   private Period period;
 
   @Embedded
-  private Address address;
+  private Address homeAddress;
+
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name="city",
+      column=@Column(name = "work_city")),
+    @AttributeOverride(name="street",
+      column=@Column(name = "work_street")),
+    @AttributeOverride(name="zipcode",
+      column=@Column(name = "work_zipcode"))
+  })
+  private Address workAddress;
 
   @OneToOne
   @JoinColumn(name = "LOCKER_ID")
@@ -71,11 +82,19 @@ public class Member extends BaseEntity {
     this.period = period;
   }
 
-  public Address getAddress() {
-    return address;
+  public Address getHomeAddress() {
+    return homeAddress;
   }
 
-  public void setAddress(Address address) {
-    this.address = address;
+  public void setHomeAddress(Address homeAddress) {
+    this.homeAddress = homeAddress;
+  }
+
+  public Address getWorkAddress() {
+    return workAddress;
+  }
+
+  public void setWorkAddress(Address workAddress) {
+    this.workAddress = workAddress;
   }
 }
