@@ -17,6 +17,12 @@ public class Member extends BaseEntity {
   @JoinColumn(name = "TEAM_ID")
   private Team team;
 
+  @Embedded
+  private Period period;
+
+  @Embedded
+  private Address address;
+
   @OneToOne
   @JoinColumn(name = "LOCKER_ID")
   private Locker locker;
@@ -56,5 +62,20 @@ public class Member extends BaseEntity {
   public void updateTeam(Team team) {
     this.team = team;
     this.team.getMemberList().add(this);
+  }
+  public Period getPeriod() {
+    return period;
+  }
+
+  public void setPeriod(Period period) {
+    this.period = period;
+  }
+
+  public Address getAddress() {
+    return address;
+  }
+
+  public void setAddress(Address address) {
+    this.address = address;
   }
 }

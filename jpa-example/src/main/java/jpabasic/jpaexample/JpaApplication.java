@@ -16,19 +16,12 @@ public class JpaApplication {
     transaction.begin();
     try{
 
-      Parent parent = new Parent();
-      Child child1 = new Child();
-      Child child2 = new Child();
+      Member member = new Member();
+      member.setUsername("Member 1");
+      member.setAddress(new Address("city", "street", "10000"));
+      member.setPeriod(new Period());
 
-      parent.addChild(child1);
-      parent.addChild(child2);
-
-      entityManager.persist(parent);
-      entityManager.persist(child1);
-      entityManager.persist(child2);
-
-      entityManager.remove(parent);
-
+      entityManager.persist(member);
 
       transaction.commit();
     }catch (Exception e) {
