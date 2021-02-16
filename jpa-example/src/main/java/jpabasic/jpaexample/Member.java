@@ -25,9 +25,9 @@ public class Member extends BaseEntity {
   @Embedded
   private Address homeAddress;
 
-  @ElementCollection
-  @CollectionTable(name = "ADDRESS")
-  private List<Address> addressHistory = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "MEMBER_ID")
+  private List<AddressEntity> addressHistory = new ArrayList<>();
 
   @ElementCollection
   @CollectionTable(name = "FAVORITE_FOOD")
@@ -90,7 +90,7 @@ public class Member extends BaseEntity {
     this.homeAddress = homeAddress;
   }
 
-  public List<Address> getAddressHistory() {
+  public List<AddressEntity> getAddressHistory() {
     return addressHistory;
   }
 
