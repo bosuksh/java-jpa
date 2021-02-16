@@ -20,7 +20,10 @@ public class JpaApplication {
       member.setUsername("Member 1");
       member.setHomeAddress(new Address("city", "street", "10000"));
       member.setPeriod(new Period());
-
+      member.getAddressHistory().add(new Address("city1","street1", "10000"));
+      member.getFavoriteFoods().add("치킨");
+      member.getFavoriteFoods().add("피자");
+      member.getFavoriteFoods().add("족발");
       entityManager.persist(member);
 
       transaction.commit();

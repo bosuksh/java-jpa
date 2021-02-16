@@ -3,7 +3,9 @@ package jpabasic.jpaexample;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member extends BaseEntity {
@@ -23,16 +25,14 @@ public class Member extends BaseEntity {
   @Embedded
   private Address homeAddress;
 
-  @Embedded
-  @AttributeOverrides({
-    @AttributeOverride(name="city",
-      column=@Column(name = "work_city")),
-    @AttributeOverride(name="street",
-      column=@Column(name = "work_street")),
-    @AttributeOverride(name="zipcode",
-      column=@Column(name = "work_zipcode"))
-  })
-  private Address workAddress;
+  @ElementCollection
+  @CollectionTable(name = "ADDRESS")
+  private List<Address> addressHistory = new ArrayList<>();
+
+  @ElementCollection
+  @CollectionTable(name = "FAVORITE_FOOD")
+  private Set<String> favoriteFoods = new HashSet<>();
+
 
   @OneToOne
   @JoinColumn(name = "LOCKER_ID")
@@ -90,11 +90,11 @@ public class Member extends BaseEntity {
     this.homeAddress = homeAddress;
   }
 
-  public Address getWorkAddress() {
-    return workAddress;
+  public List<Address> getAddressHistory() {
+    return addressHistory;
   }
 
-  public void setWorkAddress(Address workAddress) {
-    this.workAddress = workAddress;
+  public Set<String> getFavoriteFoods() {
+    return favoriteFoods;
   }
 }
