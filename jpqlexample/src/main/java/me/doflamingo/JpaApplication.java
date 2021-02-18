@@ -52,6 +52,24 @@ public class JpaApplication {
       MemberDto memberDto = resultList3.get(0);
       System.out.println("username = " + memberDto.getUsername());
       System.out.println("age = " + memberDto.getAge());
+      
+      // Paging
+      for(int i = 1; i< 101; i++) {
+        Member member1 = new Member();
+        member1.setUsername("member"+i);
+        member1.setAge(i);
+        entityManager.persist(member1);
+      }
+
+      List<Member> results = entityManager.createQuery("select m from Member m order by m.age desc", Member.class)
+                                   .setFirstResult(1)
+                                   .setMaxResults(10)
+                                   .getResultList();
+
+      System.out.println("results.size() = " + results.size());
+      for (Member result : results) {
+        System.out.println("result = " + result);
+      }
 
       transaction.commit();
     }catch (Exception e) {
