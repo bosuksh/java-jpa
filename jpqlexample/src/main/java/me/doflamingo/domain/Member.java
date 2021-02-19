@@ -9,7 +9,7 @@ public class Member {
   private String username;
   private int age;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
   @JoinColumn(name = "TEAM_ID")
   private Team team;
   public Long getId() {
