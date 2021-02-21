@@ -213,7 +213,7 @@ class JpaApplicationTest {
 
  @Test
  @DisplayName("fetch join paging api")
- public void fetchJoinPaging() throws Exception {
+ public void fetchJoinPaging() {
    //given
    Member member1 = new Member();
    member1.setUsername("회원1");
@@ -260,7 +260,7 @@ class JpaApplicationTest {
 
  @Test
  @DisplayName("엔티티 직접 사용")
- public void useEntityDirectly() throws Exception {
+ public void useEntityDirectly() {
    //given
    Member member1 = new Member();
    member1.setUsername("회원1");
@@ -302,7 +302,38 @@ class JpaApplicationTest {
                          .getSingleResult();
 
    System.out.println("findMember = " + findMember);
+ }
 
-   //then
+ @Test
+ @DisplayName("NamedQuery")
+ public void namedQuery() {
+   //given
+   Member member1 = new Member();
+   member1.setUsername("회원1");
+   Member member2 = new Member();
+   member2.setUsername("회원2");
+   Member member3 = new Member();
+   member3.setUsername("회원3");
+   Member member4 = new Member();
+   member4.setUsername("회원4");
+
+   Team team1 = new Team();
+   team1.setName("팀A");
+   team1.addMember(member1);
+   team1.addMember(member2);
+   Team team2 = new Team();
+   team2.setName("팀B");
+   team2.addMember(member3);
+   entityManager.persist(team1);
+   entityManager.persist(team2);
+
+   entityManager.flush();
+   entityManager.clear();
+   //when
+   Member findMember = entityManager.createNamedQuery("Member.findByUsername", Member.class)
+                       .setParameter("username", member1.getUsername())
+                       .getSingleResult();
+
+   System.out.println("findMember = " + findMember);
  }
 }
