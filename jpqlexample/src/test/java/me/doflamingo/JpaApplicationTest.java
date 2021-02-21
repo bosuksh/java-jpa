@@ -105,4 +105,50 @@ class JpaApplicationTest {
    //then
    transaction.commit();
  }
+ @Test
+ @DisplayName("fetch join")
+ public void fetchJoin() throws Exception {
+   //given
+   Member member1 = new Member();
+   member1.setUsername("회원1");
+   Member member2 = new Member();
+   member2.setUsername("회원2");
+   Member member3 = new Member();
+   member3.setUsername("회원3");
+   Member member4 = new Member();
+   member4.setUsername("회원4");
+
+   Team team1 = new Team();
+   team1.setName("팀A");
+   team1.addMember(member1);
+   team1.addMember(member2);
+   Team team2 = new Team();
+   team2.setName("팀B");
+   team2.addMember(member3);
+   entityManager.persist(team1);
+   entityManager.persist(team2);
+
+   entityManager.flush();
+   entityManager.clear();
+   //Member을 먼저 가져오고 LazyLoading에 의해서 Team을 프록시 객체로 만듦
+   //총 SQL문 3개가 나간다. N+1문제 발생
+   String query = "select m from Member m";
+   List<Member> resultList = entityManager.createQuery(query, Member.class).getResultList();
+   System.out.println("resultList.size() = " + resultList.size());
+   for (Member member: resultList) {
+     //여기서 select문이 하나씩 나감
+     System.out.println("member = " + member.getUsername()+" team = "+member.getTeam().getName());
+   }
+   entityManager.flush();
+   entityManager.clear();
+
+
+   //fetch join으로 한번의 쿼리만 발생
+   query = "select m from Member m join fetch m.team";
+   resultList = entityManager.createQuery(query, Member.class).getResultList();
+   System.out.println("resultList.size() = " + resultList.size());
+   for (Member member: resultList) {
+     System.out.println("member = " + member.getUsername()+" team = "+member.getTeam().getName());
+   }
+ }
 }
