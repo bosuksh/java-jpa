@@ -257,4 +257,52 @@ class JpaApplicationTest {
        System.out.println("-> member = " + member);
    }
  }
+
+ @Test
+ @DisplayName("엔티티 직접 사용")
+ public void useEntityDirectly() throws Exception {
+   //given
+   Member member1 = new Member();
+   member1.setUsername("회원1");
+   Member member2 = new Member();
+   member2.setUsername("회원2");
+   Member member3 = new Member();
+   member3.setUsername("회원3");
+   Member member4 = new Member();
+   member4.setUsername("회원4");
+
+   Team team1 = new Team();
+   team1.setName("팀A");
+   team1.addMember(member1);
+   team1.addMember(member2);
+   Team team2 = new Team();
+   team2.setName("팀B");
+   team2.addMember(member3);
+   entityManager.persist(team1);
+   entityManager.persist(team2);
+
+   entityManager.flush();
+   entityManager.clear();
+
+   /**
+    * DB는 entity를 식별자로 판단하기 떄문에
+    * JPQL에서는 entity를 식별자 대신 사용해도 좋다.
+    */
+   //when
+   String query = "select m from Member m where m = :member";
+   Member findMember = entityManager.createQuery(query, Member.class)
+                   .setParameter("member", member1)
+                   .getSingleResult();
+
+   System.out.println("findMember = " + findMember);
+
+   query = "select m from Member m where m.id = :memberId";
+   findMember = entityManager.createQuery(query, Member.class)
+                         .setParameter("memberId", member1.getId())
+                         .getSingleResult();
+
+   System.out.println("findMember = " + findMember);
+
+   //then
+ }
 }
