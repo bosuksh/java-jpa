@@ -160,7 +160,6 @@ class JpaApplicationTest {
  @DisplayName("fetch join collection")
  public void fetchJoinCollection() {
    //given
-   //given
    Member member1 = new Member();
    member1.setUsername("회원1");
    Member member2 = new Member();
@@ -204,6 +203,53 @@ class JpaApplicationTest {
 
    query = "select distinct t from Team t join fetch t.memberList";
    resultList = entityManager.createQuery(query,Team.class).getResultList();
+   System.out.println("resultList.size() = " + resultList.size());
+   for (Team team : resultList) {
+     System.out.println("team = " + team.getName());
+     for(Member member: team.getMemberList())
+       System.out.println("-> member = " + member);
+   }
+ }
+
+ @Test
+ @DisplayName("fetch join paging api")
+ public void fetchJoinPaging() throws Exception {
+   //given
+   Member member1 = new Member();
+   member1.setUsername("회원1");
+   Member member2 = new Member();
+   member2.setUsername("회원2");
+   Member member3 = new Member();
+   member3.setUsername("회원3");
+   Member member4 = new Member();
+   member4.setUsername("회원4");
+
+   Team team1 = new Team();
+   team1.setName("팀A");
+   team1.addMember(member1);
+   team1.addMember(member2);
+   Team team2 = new Team();
+   team2.setName("팀B");
+   team2.addMember(member3);
+   entityManager.persist(team1);
+   entityManager.persist(team2);
+
+   entityManager.flush();
+   entityManager.clear();
+   /**
+    * fetch join은 컬렉션에서 페이징을 사용할수 없다.
+    * 그래서 대안으로 사용하는 것이 @BatchSize로
+    * LazyLoading시 가져올 사이즈를 정할 수 있다.
+    * 예를 들어 size를 100으로 정해놓으면 LazyLoading으로 가져올 때
+    * 100개를 한꺼번에 가져오는 것이다.
+    * 이걸로 N+1문제를 해결하는데 도움이 된다.
+    */
+   String query = "select t from Team t";
+   List<Team> resultList = entityManager.createQuery(query, Team.class)
+                             .setFirstResult(0)
+                             .setMaxResults(2)
+                             .getResultList();
+   //then
    System.out.println("resultList.size() = " + resultList.size());
    for (Team team : resultList) {
      System.out.println("team = " + team.getName());
