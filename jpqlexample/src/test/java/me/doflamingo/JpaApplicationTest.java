@@ -87,7 +87,7 @@ class JpaApplicationTest {
  
  @Test
  @DisplayName("경로표현식")
- public void implicitInnerJoin() throws Exception {
+ public void implicitInnerJoin() {
    //given
    Member member = new Member();
    member.setUsername("member1");
@@ -107,7 +107,7 @@ class JpaApplicationTest {
  }
  @Test
  @DisplayName("fetch join")
- public void fetchJoin() throws Exception {
+ public void fetchJoin() {
    //given
    Member member1 = new Member();
    member1.setUsername("회원1");
@@ -130,8 +130,11 @@ class JpaApplicationTest {
 
    entityManager.flush();
    entityManager.clear();
-   //Member을 먼저 가져오고 LazyLoading에 의해서 Team을 프록시 객체로 만듦
-   //총 SQL문 3개가 나간다. N+1문제 발생
+
+   /**
+    * Member을 먼저 가져오고 LazyLoading에 의해서 Team을 프록시 객체로 만듦
+    * 총 SQL문 3개가 나간다. N+1문제 발생
+    */
    String query = "select m from Member m";
    List<Member> resultList = entityManager.createQuery(query, Member.class).getResultList();
    System.out.println("resultList.size() = " + resultList.size());
@@ -142,13 +145,70 @@ class JpaApplicationTest {
    entityManager.flush();
    entityManager.clear();
 
-
-   //fetch join으로 한번의 쿼리만 발생
+    /**
+    * fetch join으로 한번의 쿼리만 발생
+    */
    query = "select m from Member m join fetch m.team";
    resultList = entityManager.createQuery(query, Member.class).getResultList();
    System.out.println("resultList.size() = " + resultList.size());
    for (Member member: resultList) {
      System.out.println("member = " + member.getUsername()+" team = "+member.getTeam().getName());
+   }
+ }
+
+ @Test
+ @DisplayName("fetch join collection")
+ public void fetchJoinCollection() {
+   //given
+   //given
+   Member member1 = new Member();
+   member1.setUsername("회원1");
+   Member member2 = new Member();
+   member2.setUsername("회원2");
+   Member member3 = new Member();
+   member3.setUsername("회원3");
+   Member member4 = new Member();
+   member4.setUsername("회원4");
+
+   Team team1 = new Team();
+   team1.setName("팀A");
+   team1.addMember(member1);
+   team1.addMember(member2);
+   Team team2 = new Team();
+   team2.setName("팀B");
+   team2.addMember(member3);
+   entityManager.persist(team1);
+   entityManager.persist(team2);
+
+   entityManager.flush();
+   entityManager.clear();
+   /**
+    *  fetch join을 컬렉션에 수행할 시 (일대다, 다대다) 값이 증가할 수 있는데
+    *  그 이유는 table을 join하면서 하나의 팀에 대한 member가 member수 만큼 row가 생성되기 때문이다.
+    *  그러나 jpa입장에서는 이게 중복인지 확인할 수 없기 때문에 row개수대로 출력하게 되는 것이다.
+    */
+   String query = "select t from Team t join fetch t.memberList";
+   List<Team> resultList = entityManager.createQuery(query, Team.class).getResultList();
+   System.out.println("resultList.size() = " + resultList.size());
+   for (Team team : resultList) {
+     System.out.println("team = " + team.getName());
+     for(Member member: team.getMemberList())
+       System.out.println("-> member = " + member);
+   }
+
+   /**
+    * 이 방법을 해결하기 위해서 distinct를 사용하면 된다.
+    * JPQL의 distinct는 SQL에서도 distinct 시켜주고
+    * 영속성 컨텍스트에서도 같은 id를 가진 값에 대해서 distinct를 해준다.
+    */
+
+   query = "select distinct t from Team t join fetch t.memberList";
+   resultList = entityManager.createQuery(query,Team.class).getResultList();
+   System.out.println("resultList.size() = " + resultList.size());
+   for (Team team : resultList) {
+     System.out.println("team = " + team.getName());
+     for(Member member: team.getMemberList())
+       System.out.println("-> member = " + member);
    }
  }
 }
