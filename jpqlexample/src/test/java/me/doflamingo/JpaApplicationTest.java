@@ -131,9 +131,9 @@ class JpaApplicationTest {
    entityManager.flush();
    entityManager.clear();
 
-   /**
-    * Member을 먼저 가져오고 LazyLoading에 의해서 Team을 프록시 객체로 만듦
-    * 총 SQL문 3개가 나간다. N+1문제 발생
+   /*
+     Member을 먼저 가져오고 LazyLoading에 의해서 Team을 프록시 객체로 만듦
+     총 SQL문 3개가 나간다. N+1문제 발생
     */
    String query = "select m from Member m";
    List<Member> resultList = entityManager.createQuery(query, Member.class).getResultList();
@@ -145,8 +145,8 @@ class JpaApplicationTest {
    entityManager.flush();
    entityManager.clear();
 
-    /**
-    * fetch join으로 한번의 쿼리만 발생
+    /*
+    fetch join으로 한번의 쿼리만 발생
     */
    query = "select m from Member m join fetch m.team";
    resultList = entityManager.createQuery(query, Member.class).getResultList();
@@ -181,7 +181,7 @@ class JpaApplicationTest {
 
    entityManager.flush();
    entityManager.clear();
-   /**
+   /*
     *  fetch join을 컬렉션에 수행할 시 (일대다, 다대다) 값이 증가할 수 있는데
     *  그 이유는 table을 join하면서 하나의 팀에 대한 member가 member수 만큼 row가 생성되기 때문이다.
     *  그러나 jpa입장에서는 이게 중복인지 확인할 수 없기 때문에 row개수대로 출력하게 되는 것이다.
@@ -195,7 +195,7 @@ class JpaApplicationTest {
        System.out.println("-> member = " + member);
    }
 
-   /**
+   /*
     * 이 방법을 해결하기 위해서 distinct를 사용하면 된다.
     * JPQL의 distinct는 SQL에서도 distinct 시켜주고
     * 영속성 컨텍스트에서도 같은 id를 가진 값에 대해서 distinct를 해준다.
@@ -236,7 +236,7 @@ class JpaApplicationTest {
 
    entityManager.flush();
    entityManager.clear();
-   /**
+   /*
     * fetch join은 컬렉션에서 페이징을 사용할수 없다.
     * 그래서 대안으로 사용하는 것이 @BatchSize로
     * LazyLoading시 가져올 사이즈를 정할 수 있다.
@@ -284,7 +284,7 @@ class JpaApplicationTest {
    entityManager.flush();
    entityManager.clear();
 
-   /**
+   /*
     * DB는 entity를 식별자로 판단하기 떄문에
     * JPQL에서는 entity를 식별자 대신 사용해도 좋다.
     */
@@ -335,5 +335,46 @@ class JpaApplicationTest {
                        .getSingleResult();
 
    System.out.println("findMember = " + findMember);
+ }
+
+ @Test
+ @DisplayName("Bulk Update")
+ public void bulkUpdate() {
+   //given
+   Member member1 = new Member();
+   member1.setUsername("회원1");
+   Member member2 = new Member();
+   member2.setUsername("회원2");
+   Member member3 = new Member();
+   member3.setUsername("회원3");
+   Member member4 = new Member();
+   member4.setUsername("회원4");
+
+   Team team1 = new Team();
+   team1.setName("팀A");
+   team1.addMember(member1);
+   team1.addMember(member2);
+   Team team2 = new Team();
+   team2.setName("팀B");
+   team2.addMember(member3);
+   entityManager.persist(team1);
+   entityManager.persist(team2);
+
+   //when
+   int resultCount = entityManager.createQuery("update Member m set m.age = 20")
+                       .executeUpdate();
+   System.out.println("resultCount = " + resultCount);
+
+   Member findMember = entityManager.find(Member.class, member1.getId());
+   System.out.println("findMember.getAge() = " + findMember.getAge());
+
+   /*
+    * 벌크 연산은 직접 디비에 반영되기 때문에 영속성 컨텍스트와 상관이 없다.
+    * 즉 영속성 컨텍스트와 싱크가 안맞을 수 있기 때문에
+    * 벌크 연산 후에는 영속성 컨텍스트를 초기화한다.
+    */
+   entityManager.clear();
+   findMember = entityManager.find(Member.class, member1.getId());
+   System.out.println("findMember.getAge() = " + findMember.getAge());
  }
 }
